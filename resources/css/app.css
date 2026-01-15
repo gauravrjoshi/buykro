@@ -1,0 +1,59 @@
+:root {
+    --primary: #4f46e5;
+    --primary-hover: #4338ca;
+    --accent: #f59e0b;
+    --background: #ffffff;
+    --surface: #f8fafc;
+    --surface-alt: #f1f5f9;
+    --text-main: #0f172a;
+    --text-muted: #64748b;
+    --border: #e2e8f0;
+}
+
+html,
+body {
+    @apply font-sans antialiased text-[var(--text-main)] bg-[var(--background)];
+    overflow-x: hidden !important;
+}
+
+/* Minimalist Grid Card */
+.product-card {
+    @apply bg-[var(--surface)] border border-[var(--border)] rounded-2xl p-6 transition-all duration-300 hover:shadow-lg hover:border-indigo-500/20 flex flex-col h-full;
+}
+
+.category-tag {
+    @apply text-[10px] font-black uppercase tracking-widest text-indigo-600 bg-indigo-50 px-2 py-1 rounded inline-block mb-4 w-fit;
+}
+
+.product-title {
+    @apply text-xl font-bold tracking-tight mb-3 line-clamp-2;
+}
+
+.product-desc {
+    @apply text-sm text-[var(--text-muted)] mb-6 line-clamp-3 leading-relaxed;
+}
+
+.btn-buy {
+    @apply mt-auto w-full py-3 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-xl transition-all shadow-md flex items-center justify-center gap-2;
+}
+
+.btn-details {
+    @apply mt-auto w-full py-3 bg-white border border-[var(--border)] hover:bg-slate-50 text-[var(--text-main)] font-bold rounded-xl transition-all flex items-center justify-center gap-2;
+}
+
+/* Nav & Footer */
+.nav-standard {
+    @apply fixed top-0 w-full z-50 bg-white/90 backdrop-blur-md border-b border-[var(--border)];
+}
+
+.footer-standard {
+    @apply bg-[var(--surface-alt)] border-t border-[var(--border)] py-12 px-6;
+}
+
+.container-wide {
+    @apply max-w-5xl mx-auto px-6;
+}
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
