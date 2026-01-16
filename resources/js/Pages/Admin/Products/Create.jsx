@@ -1,5 +1,6 @@
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { Head, useForm, Link } from '@inertiajs/react';
+import RichTextEditor from '@/Components/RichTextEditor';
 
 export default function Create({ auth }) {
     const { data, setData, post, processing, errors } = useForm({
@@ -17,19 +18,19 @@ export default function Create({ auth }) {
     return (
         <AuthenticatedLayout
             user={auth.user}
-            header={<h2 className="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">Create Product</h2>}
+            header={<h2 className="font-semibold text-xl text-gray-800 leading-tight">Create Product</h2>}
         >
             <Head title="Admin - Create Product" />
 
             <div className="py-12">
                 <div className="max-w-3xl mx-auto sm:px-6 lg:px-8">
-                    <div className="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg p-6">
+                    <div className="bg-white overflow-hidden shadow-sm sm:rounded-lg p-8">
                         <form onSubmit={submit} className="space-y-6">
                             <div>
-                                <label className="block font-medium text-sm text-gray-700 dark:text-gray-300">Title</label>
+                                <label className="block font-medium text-sm text-gray-700 mb-2">Title</label>
                                 <input
                                     type="text"
-                                    className="mt-1 block w-full border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm"
+                                    className="mt-1 block w-full border-gray-300 bg-white text-gray-900 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm px-4 py-2"
                                     value={data.title}
                                     onChange={e => setData('title', e.target.value)}
                                     required
@@ -38,21 +39,20 @@ export default function Create({ auth }) {
                             </div>
 
                             <div>
-                                <label className="block font-medium text-sm text-gray-700 dark:text-gray-300">Description</label>
-                                <textarea
-                                    className="mt-1 block w-full border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm"
-                                    rows="4"
+                                <label className="block font-medium text-sm text-gray-700 mb-2">Description</label>
+                                <RichTextEditor
                                     value={data.description}
-                                    onChange={e => setData('description', e.target.value)}
-                                ></textarea>
+                                    onChange={(value) => setData('description', value)}
+                                    placeholder="Enter product description with rich formatting..."
+                                />
                                 {errors.description && <div className="text-red-600 text-sm mt-1">{errors.description}</div>}
                             </div>
 
                             <div>
-                                <label className="block font-medium text-sm text-gray-700 dark:text-gray-300">Category</label>
+                                <label className="block font-medium text-sm text-gray-700 mb-2">Category</label>
                                 <input
                                     type="text"
-                                    className="mt-1 block w-full border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm"
+                                    className="mt-1 block w-full border-gray-300 bg-white text-gray-900 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm px-4 py-2"
                                     value={data.category}
                                     onChange={e => setData('category', e.target.value)}
                                 />
@@ -60,29 +60,29 @@ export default function Create({ auth }) {
                             </div>
 
                             <div>
-                                <label className="block font-medium text-sm text-gray-700 dark:text-gray-300">Product Image</label>
+                                <label className="block font-medium text-sm text-gray-700 mb-2">Product Image</label>
                                 <input
                                     type="file"
-                                    className="mt-1 block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100"
+                                    className="mt-1 block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100 cursor-pointer"
                                     onChange={e => setData('image', e.target.files[0])}
                                 />
-                                <p className="text-xs text-slate-400 mt-2 italic">Links can be added after creating the product.</p>
+                                <p className="text-xs text-gray-500 mt-2 italic">Links can be added after creating the product.</p>
                                 {errors.image && <div className="text-red-600 text-sm mt-1">{errors.image}</div>}
                             </div>
 
-                            <div className="flex items-center justify-end border-t border-slate-50 pt-6">
+                            <div className="flex items-center justify-end gap-4 pt-6 border-t border-gray-200">
                                 <Link
                                     href={route('admin.products.index')}
-                                    className="mr-6 text-sm text-gray-600 dark:text-gray-400 hover:underline"
+                                    className="text-sm text-gray-600 hover:text-gray-900 transition"
                                 >
                                     Cancel
                                 </Link>
                                 <button
                                     type="submit"
-                                    className="px-8 py-3 bg-indigo-600 border border-transparent rounded-xl font-black text-xs text-white uppercase tracking-widest hover:bg-slate-900 transition-all disabled:opacity-50 shadow-lg shadow-indigo-100"
+                                    className="px-8 py-3 bg-indigo-600 border border-transparent rounded-lg font-bold text-sm text-white uppercase tracking-widest hover:bg-indigo-700 transition-all disabled:opacity-50 shadow-lg"
                                     disabled={processing}
                                 >
-                                    Create Product
+                                    CREATE PRODUCT
                                 </button>
                             </div>
                         </form>

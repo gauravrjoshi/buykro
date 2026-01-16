@@ -1,6 +1,36 @@
 import { Head, Link } from '@inertiajs/react';
+import { Share2, Check } from 'lucide-react';
+import { useState } from 'react';
+
+// Helper function to strip HTML tags for preview
+const stripHtml = (html) => {
+    const tmp = document.createElement('DIV');
+    tmp.innerHTML = html;
+    return tmp.textContent || tmp.innerText || '';
+};
 
 export default function Home({ auth, products }) {
+    const [copiedId, setCopiedId] = useState(null);
+
+    const handleShare = (e, product) => {
+        e.preventDefault();
+        e.stopPropagation();
+
+        const url = route('products.show', product.slug);
+
+        if (navigator.share) {
+            navigator.share({
+                title: product.title,
+                url: url
+            }).catch(console.error);
+        } else {
+            navigator.clipboard.writeText(url).then(() => {
+                setCopiedId(product.id);
+                setTimeout(() => setCopiedId(null), 2000);
+            });
+        }
+    };
+
     return (
         <div className="min-h-screen bg-[var(--background)]">
             <Head title="SW BuyKro | Simple Product Reviews" />
@@ -9,7 +39,7 @@ export default function Home({ auth, products }) {
                 <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-center">
                     <Link href="/" className="flex items-center gap-3">
                         <img src="/images/logo.png" className="w-10 h-10 object-contain" alt="SW Logo" />
-                        <span className="text-xl font-black tracking-tighter bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 bg-clip-text text-transparent">BuyKro</span>
+                        <span className="text-2xl font-black tracking-tighter bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 bg-clip-text text-transparent">BuyKro</span>
                     </Link>
                 </div>
             </nav>
@@ -22,18 +52,25 @@ export default function Home({ auth, products }) {
 
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                     {products.map((product) => (
-                        <div key={product.id} className="product-card">
-                            <Link href={route('products.show', product.slug)} className="block aspect-square overflow-hidden rounded-xl mb-6 bg-slate-100">
+                        <div key={product.id} className="product-card group relative">
+                            <Link href={route('products.show', product.slug)} className="block aspect-square overflow-hidden rounded-xl mb-6 bg-slate-100 relative">
                                 <img
                                     src={product.image_url}
-                                    className="w-full h-full object-cover hover:scale-105 transition-transform duration-500"
+                                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                                     alt={product.title}
                                     onError={(e) => { e.target.src = 'https://via.placeholder.com/400x400?text=Product+Image'; }}
                                 />
+                                <button
+                                    onClick={(e) => handleShare(e, product)}
+                                    className="absolute top-3 right-3 p-2 bg-white/90 backdrop-blur-sm rounded-full shadow-sm hover:bg-white hover:text-indigo-600 transition-all z-10"
+                                    title="Share product"
+                                >
+                                    {copiedId === product.id ? <Check size={18} className="text-green-600" /> : <Share2 size={18} />}
+                                </button>
                             </Link>
                             <span className="category-tag">{product.category}</span>
                             <h2 className="product-title">{product.title}</h2>
-                            <p className="product-desc">{product.description}</p>
+                            <p className="product-desc">{stripHtml(product.description)}</p>
 
                             <div className="mt-auto flex flex-col gap-3">
                                 <Link

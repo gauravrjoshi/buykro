@@ -18,6 +18,17 @@ class ProductController extends Controller
     {
         $product = Product::with('affiliateLinks')->where('slug', $slug)->firstOrFail();
 
+        // Prepare meta for social sharing (SSR)
+        $meta = [
+            'title' => $product->title . ' | SW BuyKro',
+            'description' => \Illuminate\Support\Str::limit(strip_tags($product->description), 160),
+            'image' => $product->image_url,
+            'url' => route('products.show', $product->slug),
+            'type' => 'product',
+        ];
+
+        \Illuminate\Support\Facades\View::share('meta', $meta);
+
         return Inertia::render('ProductDetail', [
             'product' => $product,
         ]);

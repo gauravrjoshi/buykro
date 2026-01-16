@@ -1,10 +1,40 @@
 import { Head, Link } from '@inertiajs/react';
-import { ArrowLeft, ExternalLink } from 'lucide-react';
+import { ArrowLeft, ExternalLink, Share2, Check } from 'lucide-react';
+import { useState } from 'react';
 
 export default function ProductDetail({ auth, product }) {
+    const [copied, setCopied] = useState(false);
+
+    const handleShare = () => {
+        const url = window.location.href;
+        if (navigator.share) {
+            navigator.share({
+                title: product.title,
+                url: url
+            }).catch(console.error);
+        } else {
+            navigator.clipboard.writeText(url).then(() => {
+                setCopied(true);
+                setTimeout(() => setCopied(false), 2000);
+            });
+        }
+    };
+
     return (
         <div className="min-h-screen bg-[var(--background)]">
-            <Head title={`${product?.title} | SW BuyKro Details`} />
+            <Head>
+                <title>{`${product?.title} | SW BuyKro Details`}</title>
+                <meta name="description" content={product.description?.replace(/<[^>]*>?/gm, '').substring(0, 160)} />
+                <meta property="og:title" content={product.title} />
+                <meta property="og:description" content={product.description?.replace(/<[^>]*>?/gm, '').substring(0, 160)} />
+                <meta property="og:image" content={product.image_url} />
+                <meta property="og:url" content={window.location.href} />
+                <meta property="og:type" content="product" />
+                <meta name="twitter:card" content="summary_large_image" />
+                <meta name="twitter:title" content={product.title} />
+                <meta name="twitter:description" content={product.description?.replace(/<[^>]*>?/gm, '').substring(0, 160)} />
+                <meta name="twitter:image" content={product.image_url} />
+            </Head>
 
             <nav className="nav-standard">
                 <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
@@ -16,6 +46,14 @@ export default function ProductDetail({ auth, product }) {
                         <div className="h-4 w-px bg-slate-200" />
                         <img src="/images/logo.png" className="w-8 h-8 object-contain opacity-80 group-hover:opacity-100 transition" alt="SW Logo" />
                     </Link>
+
+                    <button
+                        onClick={handleShare}
+                        className="flex items-center gap-2 px-4 py-2 text-sm font-bold text-slate-600 hover:text-indigo-600 hover:bg-indigo-50 rounded-lg transition-all"
+                    >
+                        {copied ? <Check size={18} className="text-green-600" /> : <Share2 size={18} />}
+                        <span>{copied ? 'Copied Link' : 'Share'}</span>
+                    </button>
                 </div>
             </nav>
 
@@ -38,10 +76,11 @@ export default function ProductDetail({ auth, product }) {
 
                         <div className="h-px bg-[var(--border)] w-full mb-8" />
 
-                        <div className="prose prose-slate max-w-none mb-10">
-                            <p className="text-lg text-[var(--text-main)] leading-relaxed font-medium">
-                                {product.description}
-                            </p>
+                        <div className="prose prose-slate prose-lg max-w-none mb-10">
+                            <div
+                                className="text-[var(--text-main)] leading-relaxed"
+                                dangerouslySetInnerHTML={{ __html: product.description }}
+                            />
                         </div>
 
                         <div className="mt-auto space-y-4">
