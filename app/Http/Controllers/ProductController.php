@@ -22,15 +22,14 @@ class ProductController extends Controller
         $meta = [
             'title' => $product->title . ' | SW BuyKro',
             'description' => \Illuminate\Support\Str::limit(strip_tags($product->description), 160),
-            'image' => $product->image_url,
+            'image' => \Illuminate\Support\Str::startsWith($product->image_url, ['http://', 'https://']) ? $product->image_url : asset($product->image_url),
             'url' => route('products.show', $product->slug),
             'type' => 'product',
         ];
 
-        \Illuminate\Support\Facades\View::share('meta', $meta);
-
+        // Use withViewData to explicitly pass data to the root template
         return Inertia::render('ProductDetail', [
             'product' => $product,
-        ]);
+        ])->withViewData(['meta' => $meta]);
     }
 }
